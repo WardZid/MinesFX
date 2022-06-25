@@ -2,6 +2,7 @@ package mines;
 
 import java.io.File;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -44,6 +46,19 @@ public class MinesController {
 
 	// user inputs
 	private int height, width, mines;
+	
+	//pre defined sizes
+	private final int easyX=10;
+	private final int easyY=10;
+	private final int easyMines=10;
+	
+	private final int mediumX=15;
+	private final int mediumY=15;
+	private final int mediumMines=30;
+
+	private final int hardX=20;
+	private final int hardY=20;
+	private final int hardMines=40;
 
 	// hbox that contains the reset/entry fields and gridpane
 	@FXML
@@ -71,16 +86,43 @@ public class MinesController {
 	}
 
 	@FXML
-	public void resetClicked() {
-		// remove old gridpane to prepare for entry of another one
-		hbox.getChildren().remove(1);
-
+	public void onEasy() {
+		widthTF.setText(easyX+"");
+		heightTF.setText(easyY+"");
+		minesTF.setText(easyMines+"");
+		newGame();
+	}
+	
+	@FXML
+	public void onMedium() {
+		widthTF.setText(mediumX+"");
+		heightTF.setText(mediumY+"");
+		minesTF.setText(mediumMines+"");
+		newGame();
+	}
+	
+	@FXML
+	public void onHard() {
+		widthTF.setText(hardX+"");
+		heightTF.setText(hardY+"");
+		minesTF.setText(hardMines+"");
+		newGame();
+	}
+	
+	@FXML
+	public void buildClicked() {
 		// start fresh game
 		newGame();
 	}
 
-	// newGame starts a new instance of Mines to prepare for a new game
+	/**
+	 *  newGame starts a new instance of Mines to prepare for a new game
+	 */
 	private void newGame() {
+		if(hbox.getChildren().size()>1)
+			// remove old gridpane to prepare for entry of another one
+			hbox.getChildren().remove(1);
+		
 		// record entries (assuming they are legal)
 		height = Integer.parseInt(heightTF.getText());
 		width = Integer.parseInt(widthTF.getText());
@@ -145,6 +187,8 @@ public class MinesController {
 		// start new gridPane
 		grid = new GridPane();
 		grid.setAlignment(Pos.CENTER);
+		
+		grid.setPadding(new Insets(5));
 
 		// init cell matrix
 		squares = new StackPane[height][width];
@@ -157,6 +201,7 @@ public class MinesController {
 				// init stackpane
 				squares[i][j] = new StackPane();
 				squares[i][j].setPrefSize(40, 40);
+				squares[i][j].setMaxSize(40, 40);
 				squares[i][j].setMinSize(10, 10);
 
 				// check game state of each cell and init accordingly
@@ -198,6 +243,7 @@ public class MinesController {
 					// init normal button that can be flagged or opened
 					Button button = new Button();
 					button.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+//					button.setMinSize(50, 50);
 
 					// click listener
 					button.setOnMouseClicked(event -> {
